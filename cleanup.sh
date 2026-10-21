@@ -1,25 +1,27 @@
 #!/bin/bash
+set -e
+#exec > /dev/null 2>&1
+source "$(dirname "$0")/config.sh"
 
-_dir="$(dirname "$0")"
+AUTH_ID=$(curl -s -G "https://$API_HOST/dnsmgr" \
+  --data-urlencode "out=json" \
+  --data-urlencode "func=auth" \
+  --data-urlencode "username=$API_USERNAME" \
+  --data-urlencode "password=$API_PASSWORD" \
+| python3 -c 'import sys,json; print(json.load(sys.stdin)["doc"]["auth"]["$id"])')
 
-source "$_dir/config.sh"
+RECORD="_acme-challenge"
+DOMAIN="$RECORD.$CERTBOT_DOMAIN."
+KEY="$DOMAIN TXT  $CERTBOT_VALIDATION"
 
+echo "Deleting $KEY"
 
-# TODO 
-# if [ -f /tmp/CERTBOT_$CERTBOT_DOMAIN/RECORD_ID ]; then
-#         RECORD_ID=$(cat /tmp/CERTBOT_$CERTBOT_DOMAIN/RECORD_ID)
-#         rm -f /tmp/CERTBOT_$CERTBOT_DOMAIN/RECORD_ID
-# fi
+curl -fsS -G "https://$API_HOST/dnsmgr" \
+--data-urlencode "out=json" \
+--data-urlencode "auth=$AUTH_ID" \
+--data-urlencode "func=domain.record.delete" \
+--data-urlencode "elid=$KEY" \
+--data-urlencode "plid=$CERTBOT_DOMAIN" \
+--data-urlencode "sok=ok" > /dev/null
 
-# # Remove the challenge TXT record from the zone
-# if [ -n "${RECORD_ID}" ]; then
-	
-# 	RESULT=$(curl -s -X POST "https://pddimp.yandex.ru/api2/admin/dns/del" \
-#      -H "PddToken: $API_KEY" \
-#      -d "domain=$CERTBOT_DOMAIN&record_id=$RECORD_ID" \
-# 	 | python -c "import sys,json;print(json.load(sys.stdin)['success'])")
-	
-# 	echo $RESULT 
-# fi
-
-echo "OK"
+echo "[DONE]"
