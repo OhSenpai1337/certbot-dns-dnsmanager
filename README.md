@@ -24,6 +24,7 @@ cd certbot-dns-dnsmanager
 Copy the example configuration and edit it:
 
 ```bash
+mv config.sh.example config.sh
 nano config.sh
 ```
 
@@ -55,8 +56,8 @@ Run Certbot with the DNS-01 challenge and the provided hooks:
 sudo certbot certonly \
   --manual \
   --preferred-challenges dns-01 \
-  --manual-auth-hook "/opt/certbot_isp/authenticator.sh" \
-  --manual-cleanup-hook "/opt/certbot_isp/cleanup.sh" \
+  --manual-auth-hook "/opt/certbot-dns-dnsmanager/auth.sh" \
+  --manual-cleanup-hook "/opt/certbot-dns-dnsmanager/cleanup.sh" \
   --email info@site.com \
   --agree-tos \
   --no-eff-email \
