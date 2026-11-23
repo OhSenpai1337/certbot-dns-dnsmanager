@@ -4,7 +4,7 @@ set -e
 _dir="$(dirname "$0")"
 source "$_dir/config.sh"
 
-AUTH_ID=$(curl -s -G "https://$API_HOST/dnsmgr" \
+AUTH_ID=$(curl -ksS -G "https://$API_HOST/dnsmgr" \
   --data-urlencode "out=json" \
   --data-urlencode "func=auth" \
   --data-urlencode "username=$API_USERNAME" \
@@ -13,7 +13,7 @@ AUTH_ID=$(curl -s -G "https://$API_HOST/dnsmgr" \
 
 RECORD="_acme-challenge"
 
-curl -fsS -G "https://$API_HOST/dnsmgr" \
+curl -kfsS -G "https://$API_HOST/dnsmgr" \
   --data-urlencode "out=json" \
   --data-urlencode "auth=$AUTH_ID" \
   --data-urlencode "func=domain.record.edit" \

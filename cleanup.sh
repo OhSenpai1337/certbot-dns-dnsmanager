@@ -3,7 +3,7 @@ set -e
 #exec > /dev/null 2>&1
 source "$(dirname "$0")/config.sh"
 
-AUTH_ID=$(curl -s -G "https://$API_HOST/dnsmgr" \
+AUTH_ID=$(curl -ksS -G "https://$API_HOST/dnsmgr" \
   --data-urlencode "out=json" \
   --data-urlencode "func=auth" \
   --data-urlencode "username=$API_USERNAME" \
@@ -16,7 +16,7 @@ KEY="$DOMAIN TXT  $CERTBOT_VALIDATION"
 
 echo "Deleting $KEY"
 
-curl -fsS -G "https://$API_HOST/dnsmgr" \
+curl -kfsS -G "https://$API_HOST/dnsmgr" \
 --data-urlencode "out=json" \
 --data-urlencode "auth=$AUTH_ID" \
 --data-urlencode "func=domain.record.delete" \
